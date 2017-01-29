@@ -1,3 +1,4 @@
+from flask import render_template, redirect, flash, jsonify, request
 from app import app
 from datetime import datetime
 
@@ -11,3 +12,7 @@ def homepage():
 
     <img src="http://loremflickr.com/600/400" />
     """.format(time=the_time)
+
+@app.route('/test')
+def index():
+    return render_template('index.html')
