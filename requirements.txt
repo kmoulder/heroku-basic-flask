@@ -2,3 +2,5 @@ Flask
 gunicorn
 SQLAlchemy
 Flask-SQLAlchemy
+SQLAlchemy-migrate
+migrate
