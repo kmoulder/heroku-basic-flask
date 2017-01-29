@@ -4,3 +4,5 @@ SQLAlchemy
 Flask-SQLAlchemy
 SQLAlchemy-migrate
 migrate
+requests
+isodate
