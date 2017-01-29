@@ -6,3 +6,5 @@ SQLAlchemy-migrate
 migrate
 requests
 isodate
+Flask-WTF
+wtforms
