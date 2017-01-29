@@ -1,0 +1,770 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Slosh - {{ title }}</title>
+    <link rel="icon" type="image/png" href="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/slosh.ico">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,300italic,300,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Fredoka+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/css/main.css">
+
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/js/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <script src="http://www.youtube.com/player_api"></script>
+    <!--<script>
+    $(window).load(function() {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");;
+    });
+    </script>-->
+
+
+     <!-- AJAX INFO -->
+
+<script type=text/javascript>
+
+    var titleText;
+    var previous;
+    var isFull = false;
+
+
+    // get next video + comments + thumbnails
+
+    function next_video() {
+        start = start + 1;
+        $.getJSON('/next/{{ subreddit }}/'+start, function(data) {
+            videoid = data.url;
+            titleText = data.title;
+            previous = data.prev;
+
+            if(previous===0){
+                $('.player-arrow-left').css('display', 'none')
+                console.log("undisplay")
+            }
+            else {
+                $('.player-arrow-left').css('display', 'block')
+                console.log("display")
+            }
+            $('#player').remove();
+            $('#holder').append('<div id="player"></div>');
+            $('#title-text').html(titleText);
+            onYouTubePlayerAPIReady();
+            if(isFull===true){
+                $('iframe').addClass('iframe-grow')
+            }
+
+        });
+
+        $('#comments-box').load('/comments/{{ subreddit }}/'+start)
+
+        return false;
+
+    }
+
+    // get previous video + comments + thumbnails
+
+    function previous_video() {
+        start = start - 1;
+        $.getJSON('/next/{{ subreddit }}/'+start, function(data) {
+            videoid = data.url;
+            titleText = data.title;
+            previous = data.prev;
+
+            if(previous===0){
+                $('.player-arrow-left').css('display', 'none')
+                console.log("undisplay")
+            }
+            else {
+                $('.player-arrow-left').css('display', 'block')
+                console.log("display")
+            }
+            $('#player').remove();
+            $('#holder').append('<div id="player"></div>')
+            $('#title-text').html(titleText);
+            onYouTubePlayerAPIReady();
+        });
+
+        $('#comments-box').load('/comments/{{ subreddit }}/'+start)
+
+        return false;
+    }
+
+    function specific_video(new_start) {
+        start=new_start
+        $.getJSON('/next/{{ subreddit }}/'+start, function(data) {
+            videoid = data.url;
+            titleText = data.title;
+            previous = data.prev;
+
+            if(previous===0){
+                $('.player-arrow-left').css('display', 'none')
+                console.log("undisplay")
+            }
+            else {
+                $('.player-arrow-left').css('display', 'block')
+                console.log("display")
+            }
+
+            $('#player').remove();
+            $('#holder').append('<div id="player"></div>');
+            $('#title-text').html(titleText);
+            onYouTubePlayerAPIReady();
+        });
+
+        $('#comments-box').load('/comments/{{ subreddit }}/'+start)
+
+        return false;
+
+    }
+
+
+    var start = {{ prev }};
+
+      $(document).ready( function() {
+        next_video();
+
+          {% for item, idx, thumb_title, duration, thumb_title_full in thumb_urls %}
+
+        $(function() {
+          $('a#topslide-{{ idx }}').bind('click', function() {
+            specific_video({{ idx }});
+          });
+        });
+          {% endfor %}
+
+      });
+
+    // click to next video
+
+    $(function() {
+      $('a#next').bind('click', function() {
+        next_video();
+      });
+    });
+
+    // click action to previous video
+
+    $(function() {
+      $('a#prev').bind('click', function() {
+        previous_video();
+      });
+    });
+
+  </script>
+
+
+
+<!-- YOUTUBE API -->
+
+    <script>
+
+    // create youtube player
+
+    var videoid = '{{ url }}';
+    var player;
+    function onYouTubePlayerAPIReady() {
+        player = new YT.Player('player', {
+          height: '656',
+          width: '100%',
+          videoId: videoid,
+          playerVars: { 'autoplay': 0, 'autohide': 1,'rel':0, 'iv_load_policy': 3},
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+    }
+
+    // autoplay video
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    // when video ends
+    function onPlayerStateChange(event) {
+        if(event.data === 0) {
+            next_video();
+        }
+    }
+
+    </script>
+
+
+
+<!-- FULLSCREEN -->
+
+
+<script>
+
+function launchIntoFullscreen() {
+    if(isFull===false){
+           console.log('start fullscreen');
+      	  $('html, body').animate({scrollTop: '0px'}, 500);
+          $('#comments-box,.video-info,.current-sub,.top-slider,.no-top,.navbar-default,.player-arrow-right,.player-arrow-left').removeClass('fadein').addClass('fadeout')
+          $('#player-box').removeClass('player-shrink').addClass('player-grow')
+          $('iframe').removeClass('iframe-shrink').addClass('iframe-grow')
+          isFull = true
+          console.log('finish fullscreen')
+        };
+};
+
+function exitFullscreen() {
+    if(isFull===true){
+          $('#comments-box,.video-info,.current-sub,.top-slider,.no-top,.navbar-default,.player-arrow-right,.player-arrow-left').css('opacity', '0').addClass('fadein').removeClass('fadeout')
+          $('#player-box').removeClass('player-grow').addClass('player-shrink')
+          $('iframe').removeClass('iframe-grow').addClass('iframe-shrink')
+          isFull = false
+        };
+};
+
+function idleLogout() {
+
+    function resetTimer() {
+	exitFullscreen();
+    clearTimeout(t);
+    t = setTimeout(launchIntoFullscreen, 10000);  // time is in milliseconds
+    };
+
+    var t;
+    console.log('t set')
+    resetTimer();
+    console.log('reset')
+    window.onload = resetTimer;
+    window.onmousemove = resetTimer;
+    window.onmousedown = resetTimer; // catches touchscreen presses
+    window.onclick = resetTimer;     // catches touchpad clicks
+    window.onscroll = resetTimer;    // catches scrolling with arrow keys
+    window.onkeypress = resetTimer;
+
+
+};
+
+idleLogout();
+</script>
+
+
+
+
+<!-- FULLSCREEN STYLE -->
+
+<style>
+    @-webkit-keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+@-moz-keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+@-o-keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+@keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+
+
+@-webkit-keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+@-moz-keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+@-o-keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+@keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+
+
+@-webkit-keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+@-moz-keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+@-o-keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+@keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+
+
+/* Reverse */
+
+
+@-webkit-keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@-moz-keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@-o-keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+
+
+@-webkit-keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+@-moz-keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+@-o-keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+@keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+
+
+@-webkit-keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+@-moz-keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+@-o-keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+@keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+
+.fadeout {
+  -webkit-animation: fadeout 1s forwards; /* Safari 4+ */
+  -moz-animation:    fadeout 1s forwards; /* Fx 5+ */
+  -o-animation:      fadeout 1s forwards; /* Opera 12+ */
+  animation:         fadeout 1s forwards; /* IE 10+, Fx 29+ */
+}
+
+/* for #player-box*/
+
+.player-grow {
+  -webkit-animation: player-grow 1s .5s forwards; /* Safari 4+ */
+  -moz-animation:    player-grow 1s .5s forwards; /* Fx 5+ */
+  -o-animation:      player-grow 1s .5s forwards; /* Opera 12+ */
+  animation:         player-grow 1s .5s forwards; /* IE 10+, Fx 29+ */
+}
+
+/* for iframe*/
+
+.iframe-grow {
+  -webkit-animation: iframe-grow 1s .5s forwards; /* Safari 4+ */
+  -moz-animation:    iframe-grow 1s .5s forwards; /* Fx 5+ */
+  -o-animation:      iframe-grow 1s .5s forwards; /* Opera 12+ */
+  animation:         iframe-grow 1s .5s forwards; /* IE 10+, Fx 29+ */
+}
+
+
+
+
+.fadein  {
+  -webkit-animation: fadein 1s .5s forwards; /* Safari 4+ */
+  -moz-animation:    fadein 1s .5s forwards; /* Fx 5+ */
+  -o-animation:      fadein 1s .5s forwards; /* Opera 12+ */
+  animation:         fadein 1s .5s forwards; /* IE 10+, Fx 29+ */
+}
+
+.player-shrink {
+  -webkit-animation: player-shrink 1s forwards; /* Safari 4+ */
+  -moz-animation:    player-shrink 1s forwards; /* Fx 5+ */
+  -o-animation:      player-shrink 1s forwards; /* Opera 12+ */
+  animation:         player-shrink 1s forwards; /* IE 10+, Fx 29+ */
+}
+
+.iframe-shrink {
+  -webkit-animation: iframe-shrink 1s forwards; /* Safari 4+ */
+  -moz-animation:    iframe-shrink 1s forwards; /* Fx 5+ */
+  -o-animation:      iframe-shrink 1s forwards; /* Opera 12+ */
+  animation:         iframe-shrink 1s forwards; /* IE 10+, Fx 29+ */
+}
+</style>
+
+
+
+
+
+
+
+</head>
+<body>
+<!--<div class="se-pre-con"></div>-->
+    <nav class="navbar navbar-default navbar-inverse" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" target="_top" href="/r/videos/"><img height="100%" src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/slosh-beta.png"></a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav sub-list">
+                <li class="#">Top Video Subreddits:</li>
+            </ul>
+            <ul class="nav navbar-nav slider-container">
+                <li id="subreddit-slider">
+                    <ul class="bxslider">
+                        {% for sub in top_subreddits %}
+                        <li><a target="_top" href="/r/{{ sub }}"><div>{{ sub }}</div></a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+
+
+            <!-- Plus icon
+            <ul class="nav navbar-nav">
+                <li>
+                    <div class="circle-plus hidden-sm">
+                        <a href="#"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                    </div>
+                </li>
+            </ul>
+            -->
+
+
+            <ul class="nav navbar-nav navbar-right">
+
+                <form class="navbar-form navbar-left" action="" method="post" name="search">
+                    <div class="form-group">
+                        {{ form.hidden_tag() }}
+                        {{ form.openid(size=80) }}<span class="glyphicon glyphicon-search" aria-hidden="true"><input class="search-button" type="submit" value="search now"></span>
+                        <div class="circle-question pull-right">
+                           <a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
+                        </div>
+                    </div>
+                </form>
+
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+
+
+    <div class="container-fluid">
+
+
+        <div class="row" id="player-area">
+            <div class="player-arrow-left">
+                <a href="javascript:void()" id="prev"><img width="100" class="bigLArrow" src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/bigLeft.png" alt=""></a>
+            </div>
+
+            <div class="col-md-7 col-sm-7 col-xs-7 col-md-offset-1" id="player-box">
+                <div id="holder">
+                        <div id="player"></div>
+                    </div>
+            </div>
+            <div class="col-md-3 col-sm-10 col-xs-3" id="comments-box">
+                <h5><strong><a href="https://reddit.com/{{ permalink }}" target="_blank">{{ num_comment }} comments</a></strong></h5>
+                {% for comment, user, replies in comments %}
+                    <div class="comment-block">
+                        <p class="user-info">{{ user }}</p>
+                    {% autoescape off %}{{ comment }}{% endautoescape %}
+                        {% for reply_1, user_1, reply_2, reply_3 in replies %}
+                        <div class="reply-1-block">
+                            <p class="user-info">{{ user_1 }}</p>
+                        {% autoescape off %}{{ reply_1 }}{% endautoescape %}
+                            {% for item, user_2 in reply_2 %}
+                            <div class="reply-2-block">
+                                <p class="user-info">{{ user_2 }}</p>
+                            {% autoescape off %}{{ item }}{% endautoescape %}
+                                {% for item_3, user_3 in reply_3 %}
+                                <div class="reply-1-block">
+                                    <p class="user-info">{{ user_3 }}</p>
+                                {% autoescape off %}{{ item_3 }}{% endautoescape %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}
+
+
+
+            </div>
+            <div class="player-arrow-right">
+                <a href="javascript:void();" id="next"><img width="100" class="bigRArrow" src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/bigRight.png" alt=""></a>
+            </div>
+
+        </div>
+
+        <div class="row video-info">
+            <div class="col-md-7 col-md-offset-1">
+            <h2><strong id="title-text">{{ title }}</strong><span id="duration"> &nbsp;({{ duration }}) </span><span id="source">&nbsp;&nbsp;<a target="_blank" href="https://www.youtube.com/watch?v={{ url }}">Source: Youtube</a></span></h2>
+
+        </div>
+            <div class="col-md-3 text-right view-post">
+                <h5><a href="https://reddit.com{{ permalink }}" target="_blank">View post on reddit</a></h5>
+
+            </div>
+        </div>
+        <div class="row current-sub">
+            <div class="col-md-5 col-md-offset-1">
+            <h3><span>you're watching </span>r/{{ subreddit }}<span class="sub-browse"> &nbsp;&nbsp;&nbsp;browse all subreddits</span></h3>
+
+            </div>
+        </div>
+
+        <div class="row top-slider" id="thumbnails">
+            <div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1">
+               <div class="nav-slider" id="thumbnails">
+                   {% for item, idx, thumb_title, duration, thumb_title_full in thumb_urls %}
+                    <div class="slide">
+                        <div class="crop">
+                        <a title="{{ thumb_title_full }}" target="_top" href="#{{ idx }}" id="topslide-{{ idx }}"><img width="290" src="http://img.youtube.com/vi/{{ item }}/0.jpg"></a>
+                        </div>
+                        <div class="thumb-info">
+                        <p title="{{ thumb_title_full }}" class="thumb-title">{{ thumb_title }}</p>
+                        <p class="duration"><span>{{ duration }}</span></p>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row no-top">
+            <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 tabs">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#menu1">Most Popular</a></li>
+                    <li><a data-toggle="tab" href="#menu2">My Favorites</a></li>
+                </ul>
+                <div class="tab-content">
+                {% for sub, sub_tuple in pop_subs %}
+                    <div id="menu1" class="tab-pane fade in active">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="head">
+                                    <div class="title">r/{{ sub }}</div><div class="circle-play"> <a href="#"> <span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></div> <span class="watch">Watch</span>
+                                </div>
+                                <div class="tab-slider-1">
+                                    {% for item, idx, thumb_title, duration in sub_tuple %}
+                                    <a target="_top" href="/r/{{ sub }}/{{ idx }}"><div class="slide">
+                                        <div class="crop">
+                                        <img src="http://img.youtube.com/vi/{{ item }}/0.jpg">
+                                        </div>
+                                        <div class="thumb-info-2">
+                                        <p class="thumb-title">{{ thumb_title }}</p>
+                                        <p class="duration"><span>{{ duration }}</span></p>
+                                        </div>
+                                    </div></a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                    <div id="menu2" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="head">
+                                    <div class="title">r/Funny</div> <div class="circle-play"> <a href="#"> <span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></div> <span class="watch">Watch</span>
+                                </div>
+                                <div class="tab-slider-3">
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video20.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video19.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video18.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video17.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video16.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video15.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video14.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video13.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video12.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video11.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="head">
+                                    <div class="title">r/Funny</div> <div class="circle-play"> <a href="#"> <span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></div> <span class="watch">Watch</span>
+                                </div>
+                                <div class="tab-slider-4">
+                                    <div class="slide"><img src="http://i.imgur.com/jhOgqC7.jpg">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video2.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video3.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video4.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video5.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video6.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video7.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video8.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video9.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                    <div class="slide"><img src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/img/video10.png">
+                                        <p>Specimen book. It has survive...</p>
+                                        <p><span>5:10</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <footer class="text-center">
+
+
+
+                </footer>
+            </div>
+        </div>
+    </div> <!-- /container -->
+    <script>window.jQuery || document.write('<script src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/js/jquery-2.2.0.min.js"><\/script>')</script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script>$.fn.modal || document.write('<script src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/js/vendor/bootstrap.min.js">\x3C/script>')</script>
+    <script src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/js/plugins/jquery.fitvids.js"></script>
+    <script src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/js/jquery.bxslider.js"></script>
+    <script src="http://freecast.s3.amazonaws.com/Rabbittvgo/Assets/red/js/main.js"></script>
+</body>
+</html>

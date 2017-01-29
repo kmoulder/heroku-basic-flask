@@ -1,0 +1,211 @@
+@-webkit-keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+@-moz-keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+@-o-keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+@keyframes fadeout {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+  0%   { visibility: visible; }
+  100% { visibility: hidden; }
+}
+
+
+@-webkit-keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+@-moz-keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+@-o-keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+@keyframes player-grow {
+  0%   { width: 58.33333333%; }
+  100% { width: 99.5vw; }
+  0%   { margin-left: 8.33333333%; }
+  100% { margin-left: 0; }
+  0%   { margin-top: 0; }
+  100% { margin-top: -60px; }
+}
+
+
+@-webkit-keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+@-moz-keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+@-o-keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+@keyframes iframe-grow {
+  0%   { height: 656px; }
+  100% { height: 900px; }
+}
+
+
+/* Reverse */
+
+
+@-webkit-keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@-moz-keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@-o-keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@keyframes fadein {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
+}
+
+
+@-webkit-keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+@-moz-keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+@-o-keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+@keyframes player-shrink {
+  0%   { width: 99.5vw; }
+  100% { width: 58.33333333%; }
+  0%   { margin-left: 0; }
+  100% { margin-left: 8.33333333%; }
+  0%   { margin-top: -60px; }
+  100% { margin-top: 0; }
+}
+
+
+@-webkit-keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+@-moz-keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+@-o-keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+@keyframes iframe-shrink {
+  0%   { height: 900px; }
+  100% { height: 655px; }
+}
+
+
+
+/* for #comments-box, .video-info, .current-sub, .top-slider, .no-top, .navbar-default, 
+.player-arrow-right, .player-arrow-left */
+
+.fadeout {
+  -webkit-animation: fadeout 1s forwards; /* Safari 4+ */
+  -moz-animation:    fadeout 1s forwards; /* Fx 5+ */
+  -o-animation:      fadeout 1s forwards; /* Opera 12+ */
+  animation:         fadeout 1s forwards; /* IE 10+, Fx 29+ */
+}
+
+/* for #player-box*/
+
+.player-grow {
+  -webkit-animation: player-grow 1s .5s forwards; /* Safari 4+ */
+  -moz-animation:    player-grow 1s .5s forwards; /* Fx 5+ */
+  -o-animation:      player-grow 1s .5s forwards; /* Opera 12+ */
+  animation:         player-grow 1s .5s forwards; /* IE 10+, Fx 29+ */
+}
+
+/* for iframe*/
+
+.iframe-grow {
+  -webkit-animation: iframe-grow 1s .5s forwards; /* Safari 4+ */
+  -moz-animation:    iframe-grow 1s .5s forwards; /* Fx 5+ */
+  -o-animation:      iframe-grow 1s .5s forwards; /* Opera 12+ */
+  animation:         iframe-grow 1s .5s forwards; /* IE 10+, Fx 29+ */
+}
+
+
+
+
+.fadein  {
+  -webkit-animation: fadein 1s .5s forwards; /* Safari 4+ */
+  -moz-animation:    fadein 1s .5s forwards; /* Fx 5+ */
+  -o-animation:      fadein 1s .5s forwards; /* Opera 12+ */
+  animation:         fadein 1s .5s forwards; /* IE 10+, Fx 29+ */
+}
+
+.player-shrink {
+  -webkit-animation: player-shrink 1s forwards; /* Safari 4+ */
+  -moz-animation:    player-shrink 1s forwards; /* Fx 5+ */
+  -o-animation:      player-shrink 1s forwards; /* Opera 12+ */
+  animation:         player-shrink 1s forwards; /* IE 10+, Fx 29+ */
+}
+
+.iframe-shrink {
+  -webkit-animation: iframe-shrink 1s forwards; /* Safari 4+ */
+  -moz-animation:    iframe-shrink 1s forwards; /* Fx 5+ */
+  -o-animation:      iframe-shrink 1s forwards; /* Opera 12+ */
+  animation:         iframe-shrink 1s forwards; /* IE 10+, Fx 29+ */
+}

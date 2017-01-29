@@ -1,0 +1,24 @@
+   <div id="top-slider">
+   <div class="row top-slider" id="thumbnails">
+            <div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1">
+                <div class="nav-slider">
+                    {% for item, idx, thumb_title, duration, thumb_title_full
+                    in thumb_urls %}
+                    <div class="slide">
+                        <div class="crop">
+                            <a href="#{{ idx }}" id="topslide-{{ idx }}"
+                            target="_top" title=
+                            "{{ thumb_title_full }}"><img src=
+                            "http://img.youtube.com/vi/{{ item }}/0.jpg"
+                            width="290"></a>
+                        </div>
+                        <div class="thumb-info">
+                            <p class="thumb-title" title=
+                            "{{ thumb_title_full }}">{{ thumb_title }}</p>
+                            <p class="duration"><span>{{ duration }}</span></p>
+                        </div>
+                    </div>{% endfor %}
+                </div>
+            </div>
+    </div>
+    </div>

@@ -1,0 +1,36 @@
+<h5><strong><a href="https://reddit.com{{ permalink }}" target="_blank">{{ num_comment }} comments</a></strong></h5>
+                {% for comment, user, replies in comments %}
+                    <div class="comment-block">
+                        <p class="user-info"><a target="_blank" class="user-info" href="http://reddit.com/u/{{ user_1 }}">{{ user }}</a></p>
+                    {% autoescape off %}{{ comment }}{% endautoescape %}
+                        {% for reply_1, user_1, reply_2, reply_3, reply_4 in replies %}
+                        <div class="reply-1-block">
+                            <p><a target="_blank" class="user-info" href="http://reddit.com/u/{{ user_1 }}">{{ user_1 }}</a></p>
+                        {% autoescape off %}{{ reply_1 }}{% endautoescape %}
+                            {% for item, user_2 in reply_2 %}
+                            <div class="reply-2-block">
+                                <p><a target="_blank" class="user-info" href="http://reddit.com/u/{{ user_2 }}">{{ user_2 }}</a></p>
+                            {% autoescape off %}{{ item }}{% endautoescape %}
+                                {% for item_3, user_3 in reply_3 %}
+                                <div class="reply-1-block">
+                                    <p><a target="_blank" class="user-info" href="http://reddit.com/u/{{ user_3 }}">{{ user_3 }}</a></p>
+                                {% autoescape off %}{{ item_3 }}{% endautoescape %}
+                                    {% for item_4, user_4, more_4 in reply_4 %}
+                                    <div class="reply-2-block">
+                                        <p><a target="_blank" class="user-info" href="http://reddit.com/u/{{ user_4 }}">{{ user_4 }}</a></p>
+                                    {% autoescape off %}{{ item_4 }}{% endautoescape %}
+                                        {% if more_4 %}
+                                        <br/>
+                                        <p><a target="_blank" href="https://reddit.com{{ permalink }}{{ more_4 }}">Continue thread <i class="icon ion-arrow-right-c"></i></a></p>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}

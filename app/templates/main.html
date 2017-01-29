@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>Here they are</p>
+{% for vid in vids %}
+    <p><img src="{{ vid.thumbnail_url }}"> {{ vid.url }} - {{ vid.sub_id }} - {{ vid.subreddit }} - {{ vid.duration }} - {{ vid.timeshift }}</p>
+{% endfor %}
+</body>
+</html>

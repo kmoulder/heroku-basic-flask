@@ -1,0 +1,13 @@
+<script>
+//for search_autocomplete.js
+     var availableTags = [
+        {% for sub in subreddits %}
+            "{{ sub }}",
+        {% endfor %}
+    ];
+
+//for youtube-api-custom.js
+     var videoid = '{{ url }}';
+     var startTime = {{ timeshift }};
+
+</script>

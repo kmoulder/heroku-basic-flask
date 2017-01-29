@@ -1,0 +1,84 @@
+
+        <div class="row" id="player-area">
+            <div class="player-arrow-left">
+                <a href="javascript:void()" id="prev"><img alt="" class=
+                "bigLArrow" src=
+                "{{ url_for('static', filename='img/bigLeft.png') }}"
+                width="100"></a>
+            </div>
+            <div class="col-md-7 col-sm-7 col-xs-7 col-md-offset-1" id=
+            "player-box">
+                <div id="holder">
+                    <div id="player"></div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-10 col-xs-3" id="comments-box">
+                <h5><strong><a href="https://reddit.com/{{ permalink }}"
+                target="_blank">{{ num_comment }} comments</a></strong></h5>{%
+                for comment, user, replies in comments %}
+                <div class="comment-block">
+                    <p class="user-info">{{ user }}</p>{% autoescape off %}{{
+                    comment }}{% endautoescape %} {% for reply_1, user_1,
+                    reply_2, reply_3, reply_4 in replies %}
+                    <div class="reply-1-block">
+                        <p class="user-info">{{ user_1 }}</p>{% autoescape off
+                        %}{{ reply_1 }}{% endautoescape %} {% for item, user_2
+                        in reply_2 %}
+                        <div class="reply-2-block">
+                            <p class="user-info">{{ user_2 }}</p>{% autoescape
+                            off %}{{ item }}{% endautoescape %} {% for item_3,
+                            user_3 in reply_3 %}
+                            <div class="reply-1-block">
+                                <p class="user-info">{{ user_3 }}</p>{%
+                                autoescape off %}{{ item_3 }}{% endautoescape
+                                %}
+                                {% for item_4,user_4,more_4 in reply_4 %}
+                                <div class="reply-2-block">
+                                    <p class="user-info">{{ user_4 }}</p>{%
+                                    autoescape off %}{{ item_4 }}{% endautoescape %}
+                                    {% if more_4 %}
+                                       <br/>
+                                       <p><a target="_blank" href="https://reddit.com{{ permalink }}{{ more_4 }}">Continue thread <i class="icon ion-arrow-right-c"></i></a></p>
+                                    {% endif %}
+                            </div>{% endfor %}
+                            </div>{% endfor %}
+                        </div>{% endfor %}
+                    </div>{% endfor %}
+                </div>{% endfor %}
+            </div>
+            <div class="player-arrow-right">
+                <a href="javascript:void();" id="next"><img alt="" class=
+                "bigRArrow" src=
+                "{{ url_for('static', filename='img/bigRight.png') }}"
+                width="100"></a>
+            </div>
+        </div>
+
+
+        <div class="row video-info">
+            <div class="col-md-7 col-md-offset-1">
+                <h2><strong id="title-text">{{ title }}</strong> <span id=
+                "duration">&nbsp;({{ duration }})</span> <span id=
+                "source">&nbsp;&nbsp;<a href=
+                "https://www.youtube.com/watch?v={{ url }}" target=
+                "_blank">Source: Youtube</a></span></h2>
+            </div>
+            <div class="col-md-3 text-right view-post">
+                <h5><a href="https://reddit.com{{ permalink }}" target=
+                "_blank">View post on reddit</a></h5>
+                <div class="toggle-button">
+                    <button></button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row current-sub">
+            <div class="col-md-5 col-md-offset-1">
+                <h3><span>you're watching</span> r/{{ subreddit }} <span class=
+                "sub-browse">&nbsp;&nbsp;&nbsp;browse all
+                subreddits</span></h3>
+            </div>
+        </div>
+
+

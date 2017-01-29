@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body_content %}
+
+{% include "_includes/variables.html" %}
+
+{% include "_includes/navbar.html" %}
+
+<div class="container-fluid">
+
+{% include "_includes/player-area.html" %}
+
+{% include "_includes/top-slider.html" %}
+
+{% include "_includes/more-sliders.html" %}
+
+{% include "_includes/footer.html" %}
+
+</div><!-- /container -->
+
+<!-- video controls - next, prev, specific video -->
+{% include "_includes/video-controls.html" %}
+<!-- end video controls -->
+
+{% endblock %}

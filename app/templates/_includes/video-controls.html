@@ -1,0 +1,161 @@
+
+<script type=text/javascript>
+
+    var titleText;
+    var previous;
+    var newDuration;
+    var isFull = false;
+    var allowFullscreen = true;
+
+    //MAKE THIS TRUE FOR LAUNCH//
+    var fullscreenToggle = false;
+
+
+
+    function create_slide_items() {
+        {% for item, idx, thumb_title, duration, thumb_title_full in thumb_urls %}
+            $(function () {
+                $('a#topslide-{{ idx }}').bind('click', function () {
+                    specific_video({{ idx }});
+                    console.log('slider {{ idx }} loaded')
+                });
+            });
+        {% endfor %}
+    }
+
+
+    // get next video + comments + thumbnails
+
+    function next_video() {
+        start = start + 1;
+        $.getJSON('/next/{{ subreddit }}/'+start, function(data) {
+            videoid = data.url;
+            // TODO why isn't timeshift below working - it's in the /next data in the views
+            startTime = data.timeshift;
+            console.log(startTime);
+            titleText = data.title;
+            previous = data.prev;
+            newDuration = data.duration;
+
+            if(previous===0){
+                $('.player-arrow-left').css('display', 'none')
+            }
+            else {
+                $('.player-arrow-left').css('display', 'block')
+            }
+            $('#player').remove();
+            $('#holder').append('<div id="player"></div>');
+            $('#title-text').html(titleText);
+            $('#duration').html("&nbsp;("+newDuration+")&nbsp;");
+            ;
+            onYouTubePlayerAPIReady();
+            if(isFull===true){
+                $('iframe').addClass('iframe-grow')
+            }
+
+        });
+
+        $('#comments-box').load('/comments/{{ subreddit }}/'+start);
+        $("#comments-box").delay(2000).animate({ scrollTop: 0 }, "slow");
+        $('#top-slider').load('/thumbnails/{{ subreddit }}/'+start);
+
+        console.log(start);
+
+        return false;
+
+    }
+
+
+
+    // get previous video + comments + thumbnails
+
+    function previous_video() {
+        start = start - 1;
+        $.getJSON('/next/{{ subreddit }}/'+start, function(data) {
+            videoid = data.url;
+            startTime = data.timeshift;
+            titleText = data.title;
+            previous = data.prev;
+            newDuration = data.duration;
+
+            if(previous===0){
+                $('.player-arrow-left').css('display', 'none')
+            }
+            else {
+                $('.player-arrow-left').css('display', 'block')
+            }
+            $('#player').remove();
+            $('#holder').append('<div id="player"></div>')
+            $('#title-text').html(titleText);
+            $('#duration').html("&nbsp;("+newDuration+")&nbsp;");
+            onYouTubePlayerAPIReady();
+        });
+
+        $('#comments-box').load('/comments/{{ subreddit }}/'+start)
+        $('#top-slider').load('/thumbnails/{{ subreddit }}/'+start);
+
+        return false;
+    }
+
+    // get specific video + comments + thumbnails
+
+    function specific_video(new_start) {
+        start=new_start
+        $.getJSON('/next/{{ subreddit }}/'+start, function(data) {
+            videoid = data.url;
+            startTime = data.timeshift;
+            titleText = data.title;
+            previous = data.prev;
+            newDuration = data.duration;
+
+            if(previous===0){
+                $('.player-arrow-left').css('display', 'none')
+            }
+            else {
+                $('.player-arrow-left').css('display', 'block')
+            }
+
+            $('#player').remove();
+            $('#holder').append('<div id="player"></div>');
+            $('#title-text').html(titleText);
+            $('#duration').html("&nbsp;("+newDuration+")&nbsp;");
+            onYouTubePlayerAPIReady();
+        });
+
+
+        $('#comments-box').load('/comments/{{ subreddit }}/'+start);
+        $('#top-slider').load('/thumbnails/{{ subreddit }}/'+start);
+
+        console.log(start);
+
+        return false;
+
+    }
+
+    //populate first video and top slider
+
+    var start = {{ prev }};
+
+      $(document).ready( function() {
+        next_video();
+          create_slide_items();
+
+      });
+
+    // click to next video
+
+    $(function() {
+      $('a#next').bind('click', function() {
+        next_video();
+      });
+    });
+
+    // click to previous video
+
+    $(function() {
+      $('a#prev').bind('click', function() {
+        previous_video();
+      });
+    });
+
+  </script>
