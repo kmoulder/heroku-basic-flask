@@ -7,6 +7,10 @@ from .forms import LoginForm
 
 @app.route('/')
 def index():
+    return redirect("/r/videos/1", code=302)
+
+@app.route('/basic')
+def basic():
     vids = models.Video.query.all()
     return render_template('main.html', vids=vids)
 
